@@ -1,0 +1,44 @@
+name: CI/CD Pipeline
+
+on:
+  pull_request:
+    branches:
+      - dev # Run tests on PRs targeting dev
+  push:
+    branches:
+      - main # Deploy only when pushing to main
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Linter
+        run: npm run lint
+
+      - name: Run Tests
+        run: npm test
+
+  deploy:
+    name: Deploy to Vercel
+    if: github.ref == 'refs/heads/main' # Deploy only if it's a push to main
+    needs: test # Run only if tests pass
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
+      - name: Deploy to Vercel
+        run: npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}

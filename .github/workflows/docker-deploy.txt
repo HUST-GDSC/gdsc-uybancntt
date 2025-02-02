@@ -8,7 +8,7 @@ jobs:
 
   build:
 
-    runs-on: self-hosted #ubuntu-latest if you don't run runner on vps
+    runs-on: ubuntu-latest #self-hosted if you  run runner on vps
 
     steps:
       - name: Checkout repository
