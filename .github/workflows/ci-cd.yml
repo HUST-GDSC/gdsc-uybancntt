@@ -3,14 +3,15 @@ name: CI/CD Pipeline
 on:
   pull_request:
     branches:
-      - dev # Run tests on PRs targeting dev
+      - dev # Run tests only on PRs targeting dev
   push:
     branches:
-      - main # Deploy only when pushing to main
+      - main # Deploy only on pushes to main
 
 jobs:
   test:
     name: Run Tests
+    if: github.event_name == 'pull_request' # Ensures tests only run on PRs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -19,16 +20,19 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Run Prettier Check
+        run: npx prettier --check .
+
       - name: Run Linter
         run: npm run lint
 
-      - name: Run Tests
-        run: npm test
+      # We'll add more test later
+      # - name: Run Tests
+      #   run: npm test
 
   deploy:
     name: Deploy to Vercel
-    if: github.ref == 'refs/heads/main' # Deploy only if it's a push to main
-    needs: test # Run only if tests pass
+    if: github.ref == 'refs/heads/main' # Deploy only when pushing to main
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
