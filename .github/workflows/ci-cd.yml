@@ -29,20 +29,3 @@ jobs:
       # We'll add more test later
       # - name: Run Tests
       #   run: npm test
-
-  deploy:
-    name: Deploy to Vercel
-    if: github.ref == 'refs/heads/main' # Deploy only when pushing to main
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build project
-        run: npm run build
-
-      - name: Deploy to Vercel
-        run: npx vercel --prod --token ${{ secrets.VERCEL_TOKEN }}
